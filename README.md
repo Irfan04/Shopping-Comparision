@@ -13,7 +13,7 @@ Description
 
 
 
-This Application is about Comparing Products in FlipKart/Amazon
+This Application is about Comparing Products Cost in FlipKart/Amazon
 
 
 
