@@ -1,0 +1,810 @@
+
+
+Intial home page
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace smartshoppingproject
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Registration r = new Registration();
+            r.Show();
+            this.Hide();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Login l = new Login();
+            l.Show();
+            this.Hide();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            admin a = new admin();
+            a.Show();
+            this.Hide();
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
+
+Registration page
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace smartshoppingproject
+{
+    public partial class Registration : Form
+    {
+        public Registration()
+        {
+            InitializeComponent();
+            Random rand = new Random();
+            int k = 0;
+            k = rand.Next(1,5000);
+            label9.Text = "cus"+k.ToString();
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Form1 f = new Form1();
+            f.Show();
+            this.Hide();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (textBox1.Text == "" || textBox2.Text == "" || textBox3.Text == "" || textBox4.Text == "" || textBox5.Text == "" || textBox6.Text == "")
+            {
+                MessageBox.Show("Enter Data for All Fields");
+            }
+            else
+            {
+                SqlConnection con = new SqlConnection(@"Data Source=.\SQLEXPRESS;AttachDbFilename=D:\smartshoppingproject\smartshoppingproject\smartshoppingproject\shopping.mdf;Integrated Security=True;User Instance=True");
+                con.Open();
+                SqlCommand cmd = new SqlCommand("insert into customer(cusid,name,phone,address,email,username,password) values('" + label9.Text + "','" + textBox1.Text + "','" + textBox2.Text + "','" + textBox3.Text + "','" + textBox4.Text + "','" + textBox5.Text + "','" + textBox6.Text + "')", con);
+                cmd.ExecuteNonQuery();
+                con.Close();
+                MessageBox.Show("Successfully Registered");
+                MessageBox.Show("Your ID is :" + label9.Text);
+                Login l = new Login();
+                l.Show();
+                this.Hide();
+            }
+        }
+    }
+}
+
+
+
+Login page
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Data.SqlClient;
+using System.Text;
+using System.Windows.Forms;
+
+namespace smartshoppingproject
+{
+    public partial class Login : Form
+    {
+        public Login()
+        {
+            InitializeComponent();
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Form1 f = new Form1();
+            f.Show();
+            this.Hide();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SqlConnection con = new SqlConnection(@"Data Source=.\SQLEXPRESS;AttachDbFilename=D:\smartshoppingproject\smartshoppingproject\smartshoppingproject\shopping.mdf;Integrated Security=True;User Instance=True");
+            con.Open();
+            SqlCommand cmd = new SqlCommand("select * from customer where username='"+textBox1.Text+"'",con);
+            SqlDataReader dr = cmd.ExecuteReader();
+            string s;
+            if (dr.Read() == true)
+            {
+            s=dr[7].ToString();
+            if (textBox2.Text ==s)
+            {
+                textBox1.Text = "";
+                textBox2.Text = "";
+                profileupdate m = new profileupdate();
+                m.Show();
+                this.Hide();
+            }
+            else
+            {
+                MessageBox.Show("Your Password is Inccorect");
+            }
+
+            }
+            else
+            {
+                MessageBox.Show("Your UserName is Inccorect");
+            }
+        }
+    }
+}
+
+Home page with profile update, products, check credits
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SqlClient;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace smartshoppingproject
+{
+    public partial class profileupdate : Form
+    {
+        public profileupdate()
+        {
+            InitializeComponent();
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            panel1.Visible = true;
+            panel2.Visible = false;
+            panel3.Visible = false;
+            panel4.Visible = false;
+        }
+
+        private void linkLabel4_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            panel1.Visible = false;
+            Ourproducts k = new Ourproducts();
+            k.Show();
+            this.Hide();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SqlConnection con = new SqlConnection(@"Data Source=.\SQLEXPRESS;AttachDbFilename=D:\smartshoppingproject\smartshoppingproject\smartshoppingproject\shopping.mdf;Integrated Security=True;User Instance=True");
+            con.Open();
+            SqlCommand cmd = new SqlCommand("select * from customer where cusid='"+textBox1.Text+"' ",con);
+            SqlDataReader dr = cmd.ExecuteReader();
+            string a, b, c, d;
+            if (dr.Read() == true)
+            {
+                a = dr[2].ToString();
+                b = dr[3].ToString();
+                c = dr[4].ToString();
+                d = dr[5].ToString();
+                textBox2.Text = a.ToString();
+                textBox3.Text = b.ToString();
+                textBox4.Text = c.ToString();
+                textBox5.Text = d.ToString();
+            }
+            else
+            {
+
+                MessageBox.Show("Enter Correct Customer id");
+            }
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            SqlConnection con = new SqlConnection(@"Data Source=.\SQLEXPRESS;AttachDbFilename=D:\smartshoppingproject\smartshoppingproject\smartshoppingproject\shopping.mdf;Integrated Security=True;User Instance=True");
+            con.Open();
+            SqlCommand cmd = new SqlCommand("update customer set name='"+textBox2.Text+"',phone='"+textBox3.Text+"',address='"+textBox4.Text+"',email='"+textBox5.Text+"' where cusid='"+textBox1.Text+"'",con );
+            cmd.ExecuteNonQuery();
+            con.Close();
+            MessageBox.Show("Profile Updated");
+            textBox1.Text = "";
+            textBox2.Text = "";
+            textBox3.Text = "";
+            textBox4.Text = "";
+            textBox5.Text = "";
+            panel1.Visible = false;
+        }
+
+        private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+
+            panel1.Visible = false; 
+            panel2.Visible = true;
+            panel3.Visible = false;
+            panel4.Visible = false;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            SqlConnection con = new SqlConnection(@"Data Source=.\SQLEXPRESS;AttachDbFilename=D:\smartshoppingproject\smartshoppingproject\smartshoppingproject\shopping.mdf;Integrated Security=True;User Instance=True");
+            con.Open();
+            SqlCommand cmd = new SqlCommand("update customer set password='" + textBox7.Text + "' where cusid='" + textBox6.Text + "'", con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+            MessageBox.Show("Password Updated");
+            textBox6.Text = "";
+            textBox7.Text = "";
+            panel2.Visible = false;
+        }
+
+        private void linkLabel5_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Form1 f = new Form1();
+            f.Show();
+            this.Hide();
+        }
+
+        private void profileupdate_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            SqlConnection con = new SqlConnection(@"Data Source=.\SQLEXPRESS;AttachDbFilename=D:\smartshoppingproject\smartshoppingproject\smartshoppingproject\shopping.mdf;Integrated Security=True;User Instance=True");
+            con.Open();
+            SqlCommand cmd = new SqlCommand("select * from ordertab where orderid='" + textBox8.Text + "' ", con);
+            SqlDataReader dr = cmd.ExecuteReader();
+            string a, b, c, d,f,h;
+            if (dr.Read() == true)
+            {
+                label12.Visible = true;
+                label13.Visible = true;
+                label14.Visible = true;
+                label15.Visible = true;
+                label16.Visible = true;
+                label17.Visible = true;
+                label18.Visible = true;
+                label19.Visible = true;
+                label20.Visible = true;
+                label21.Visible = true;
+                label22.Visible = true;
+                label23.Visible = true;
+                a = dr[2].ToString();
+                b = dr[3].ToString();
+                c = dr[4].ToString();
+                d = dr[5].ToString();
+                f=dr[6].ToString();
+                h = dr[7].ToString();
+                label18.Text = a.ToString();
+                label19.Text= b.ToString();
+                label20.Text = c.ToString();
+                label21.Text = d.ToString();
+                label22.Text = f.ToString();
+                label23.Text = h.ToString();
+            }
+            else
+            {
+
+                MessageBox.Show("Enter Correct Order id");
+            }
+        }
+
+        private void linkLabel3_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            panel3.Visible = true;
+            panel2.Visible = false;
+            panel1.Visible = false;
+            panel4.Visible = false;
+        }
+
+        private void linkLabel6_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            panel4.Visible = true;
+            panel3.Visible = false;
+            panel2.Visible = false;
+            panel1.Visible = false;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            SqlConnection con = new SqlConnection(@"Data Source=.\SQLEXPRESS;AttachDbFilename=D:\smartshoppingproject\smartshoppingproject\smartshoppingproject\shopping.mdf;Integrated Security=True;User Instance=True");
+            con.Open();
+            SqlCommand cmd = new SqlCommand("select * from customer where cusid='" + textBox9.Text + "' ", con);
+            SqlDataReader dr = cmd.ExecuteReader();
+            string a;
+            if (dr.Read() == true)
+            {
+                a = dr[8].ToString();
+                if (a == "")
+                {
+                    MessageBox.Show("Your have zeor(0) credit points");
+                }
+                else
+                {
+                    MessageBox.Show("Your Total Credits :" + a + " Points");
+                }
+                    textBox9.Text = "";
+                panel4.Visible = false;
+                
+            }
+            else
+            {
+
+                MessageBox.Show("Enter Correct Customer id");
+                panel4.Visible = false;
+            }
+        }
+    }
+}
+
+Products page
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace smartshoppingproject
+{
+    public partial class Ourproducts : Form
+    {
+        public Ourproducts()
+        {
+            InitializeComponent();
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            shopping s = new shopping();
+            s.Show();
+            this.Hide();
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Successfully Logged out");
+            Form1 f = new Form1();
+            f.Show();
+            this.Hide();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            addtocart a = new addtocart(label2.Text, label4.Text);
+            a.Show();
+            this.Hide();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            addtocart a = new addtocart(label5.Text, label6.Text);
+            a.Show();
+            this.Hide();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            addtocart a = new addtocart(label7.Text, label8.Text);
+            a.Show();
+            this.Hide();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            addtocart a = new addtocart(label9.Text, label10.Text);
+            a.Show();
+            this.Hide();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            addtocart a = new addtocart(label11.Text, label12.Text);
+            a.Show();
+            this.Hide();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            addtocart a = new addtocart(label13.Text, label14.Text);
+            a.Show();
+            this.Hide();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            addtocart a = new addtocart(label15.Text, label16.Text);
+            a.Show();
+            this.Hide();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            addtocart a = new addtocart(label17.Text, label18.Text);
+            a.Show();
+            this.Hide();
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            addtocart a = new addtocart(label19.Text, label20.Text);
+            a.Show();
+            this.Hide();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            addtocart a = new addtocart(label21.Text, label22.Text);
+            a.Show();
+            this.Hide();
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            addtocart a = new addtocart(label23.Text, label24.Text);
+            a.Show();
+            this.Hide();
+        }
+
+        private void button12_Click(object sender, EventArgs e)
+        {
+            addtocart a = new addtocart(label25.Text, label26.Text);
+            a.Show();
+            this.Hide();
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            profileupdate s = new profileupdate();
+            s.Show();
+            this.Hide();
+        }
+    }
+}
+
+Shopping i.e., compare page
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace smartshoppingproject
+{
+    public partial class shopping : Form
+    {
+        public shopping()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            webBrowser1.Visible = true;
+            webBrowser2.Visible = true;
+            webBrowser1.Navigate("http://shopping.rediff.com/?sc_cid=DGM_books_text#!" + textBox1.Text);
+            webBrowser2.Navigate("http://www.walmart.com/search/?query=" + textBox1.Text);
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Ourproducts k = new Ourproducts();
+            k.Show();
+            this.Hide();
+        }
+    }
+}
+
+Add to cart
+
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Data.SqlClient;
+using System.Text;
+using System.Windows.Forms;
+
+namespace smartshoppingproject
+{
+    public partial class addtocart : Form
+    {
+               
+        public addtocart(string a,string b)
+        {
+            InitializeComponent();
+            label8.Text = a.ToString();
+            label9.Text = b.ToString();
+            Random rand = new Random();
+            int k = rand.Next(1,5000);
+            label7.Text = k.ToString();
+            DateTime d = DateTime.Now;
+            label11.Text = d.ToShortDateString();
+        }
+       
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Ourproducts k = new Ourproducts();
+            k.Show();
+            this.Hide();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SqlConnection con = new SqlConnection(@"Data Source=.\SQLEXPRESS;AttachDbFilename=D:\smartshoppingproject\smartshoppingproject\smartshoppingproject\shopping.mdf;Integrated Security=True;User Instance=True");
+            con.Open();
+            SqlCommand cmd = new SqlCommand("insert into ordertab(orderid,productname,productcost,name,address,mobile,date) values('"+label7.Text+"','"+label8.Text+"','"+label9.Text+"','"+textBox1.Text+"','"+textBox2.Text+"','"+textBox3.Text+"','"+label11.Text+"')",con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+            MessageBox.Show("Your Order id :"+label7.Text);
+            MessageBox.Show("your product will be Deliver with in 5 days");
+            credits();
+            MessageBox.Show("Thank you for shopping");
+            profileupdate p = new profileupdate();
+            p.Show();
+            this.Hide();
+        }
+        
+        public void credits()
+        {
+
+            double a;
+            a = Convert.ToDouble(label9.Text);
+        
+            if (a <= 1000)
+        {
+            int x = 5;
+            label13.Text = x.ToString();
+        }
+            if (a > 1000 && a<=2000)
+            {
+                int x = 10;
+                label13.Text = x.ToString();
+            }
+            if (a > 2000 && a <= 5000)
+            {
+                int x = 20;
+                label13.Text = x.ToString();
+            }
+            if (a > 5000 && a <= 10000)
+            {
+                int x = 40;
+                label13.Text = x.ToString();
+            }
+            if (a > 10000 && a <= 20000)
+            {
+                int x = 45;
+                label13.Text = x.ToString();
+            }
+            if (a > 20000 && a <= 30000)
+            {
+                int x = 50;
+                label13.Text = x.ToString();
+            }
+            if (a > 30000 && a <= 50000)
+            {
+                int x = 60;
+                label13.Text = x.ToString();
+            }
+            if (a > 50000 && a <= 100000)
+            {
+                int x = 80;
+                label13.Text = x.ToString();
+            }
+
+            SqlConnection con = new SqlConnection(@"Data Source=.\SQLEXPRESS;AttachDbFilename=D:\smartshoppingproject\smartshoppingproject\smartshoppingproject\shopping.mdf;Integrated Security=True;User Instance=True");
+            con.Open();
+            SqlCommand cmd = new SqlCommand("select * from customer where cusid='"+textBox4.Text+"'",con);
+            SqlDataReader dr = cmd.ExecuteReader();
+            string m;
+            int t,k,l,n;
+            if (dr.Read() == true)
+            {
+                m = dr[8].ToString();
+                label15.Text = m.ToString();
+                if (m.ToString() == "")
+                {
+                    empty();
+                }
+                else
+                {
+                    k = Convert.ToInt32(label15.Text);
+                    l = Convert.ToInt32(label13.Text);
+                    t = k + l;
+                    label14.Text = t.ToString();
+                    updatetab();
+                }
+            }
+
+        }
+        public void empty()
+        {
+            SqlConnection con = new SqlConnection(@"Data Source=.\SQLEXPRESS;AttachDbFilename=D:\smartshoppingproject\smartshoppingproject\smartshoppingproject\shopping.mdf;Integrated Security=True;User Instance=True");
+            con.Open();
+            SqlCommand cmd = new SqlCommand("update customer set credits="+label13.Text+" where cusid='"+textBox4.Text+"'", con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+        public void updatetab()
+        {
+            SqlConnection con = new SqlConnection(@"Data Source=.\SQLEXPRESS;AttachDbFilename=D:\smartshoppingproject\smartshoppingproject\smartshoppingproject\shopping.mdf;Integrated Security=True;User Instance=True");
+            con.Open();
+            SqlCommand cmd = new SqlCommand("update customer set credits=" + label14.Text + " where cusid='" + textBox4.Text + "'", con);
+            cmd.ExecuteNonQuery();
+            con.Close();
+        }
+        
+    }
+}
+
+Admin login page
+
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace smartshoppingproject
+{
+    public partial class admin : Form
+    {
+        public admin()
+        {
+            InitializeComponent();
+        }
+
+        private void admin_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (textBox1.Text == "" || textBox2.Text == "")
+            {
+                MessageBox.Show("Enter Data For Fields");
+            }
+            else
+            {
+                if (textBox1.Text == "admin" && textBox2.Text == "admin123")
+                {
+                    adminpage ap = new adminpage();
+                    ap.Show(); 
+                    this.Hide();
+                }
+                else
+                {
+                    MessageBox.Show("Either UserName or Password is Incorrect");
+                }
+            }
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Form1 f = new Form1();
+            f.Show();
+            this.Hide();
+        }
+    }
+}
+
+
+Admin page
+
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+namespace smartshoppingproject
+{
+    public partial class adminpage : Form
+    {
+        public adminpage()
+        {
+            InitializeComponent();
+        }
+
+        private void adminpage_Load(object sender, EventArgs e)
+        {
+            // TODO: This line of code loads data into the 'shoppingDataSet3.ordertab' table. You can move, or remove it, as needed.
+            this.ordertabTableAdapter.Fill(this.shoppingDataSet3.ordertab);
+            // TODO: This line of code loads data into the 'shoppingDataSet2.customer' table. You can move, or remove it, as needed.
+            this.customerTableAdapter1.Fill(this.shoppingDataSet2.customer);
+            // TODO: This line of code loads data into the 'shoppingDataSet1.customer' table. You can move, or remove it, as needed.
+            this.customerTableAdapter.Fill(this.shoppingDataSet1.customer);
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            dataGridView1.Visible = true;
+            dataGridView2.Visible = false;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+             
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            
+            dataGridView2.Visible = true;
+            dataGridView1.Visible = false;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+         
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Form1 f = new Form1();
+            f.Show();
+            this.Hide();
+        }
+    }
+}
+
+
+
+
+
